@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛒 Product List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div>
+        <h1>🛍️ toBuy </h1>
+    </div>
+
+    <div class="navigation">
+        <a href="{{ url_for('to_buy') }}"><button>🛒 To Buy</button></a>
+        <a href="{{ url_for('charts') }}"><button>📊 Charts</button></a>
+    </div>
+
+    <div class="popup" id="addProductPopup">
+        <span class="popup-close" onclick="closeAddProductPopup()">&times;</span>
+        <form method="POST" action="{{ url_for('add_product') }}" class="popup-form" onsubmit="return validateAddProductForm()">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required><br><br>
+
+            <label for="type">Type:</label>
+            <select id="type" name="type" required>
+                <option value="food">Food</option>
+                <option value="cleaning">Cleaning</option>
+                <option value="hygiene">Hygiene</option>
+            </select><br><br>
+
+            <label for="expiration">Expiration (days):</label>
+            <input type="number" id="expiration" name="expiration" required><br><br>
+
+            <input type="checkbox" id="toBuy" name="toBuy">
+            <label for="toBuy">Need to Buy?</label><br><br>
+
+            <button type="submit">Add Product</button>
+        </form>
+    </div>
+
+    <div class="popup" id="removeProductPopup">
+        <span class="popup-close" onclick="closeRemoveProductPopup()">&times;</span>
+        <form method="POST" action="{{ url_for('remove_product') }}" class="popup-form">
+            <label for="productToRemove">Select Product to Remove:</label>
+            <select id="productToRemove" name="productToRemove">
+                {% for product in products %}
+                    <option value="{{ product.id }}">{{ product.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Remove</button>
+        </form>
+    </div>
+
+    <div class="summary">
+        <h2>Summary</h2>
+        <ul>
+            <li>Total Products: {{ products|length }}</li>
+            <li>Products to Buy: {{ to_buy_count }}</li>
+        </ul>
+    </div>
+
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+<footer class="footer">
+     <p class="footer-text">🛍️ toBuy @ 2024</p>
+</footer>
+</html>

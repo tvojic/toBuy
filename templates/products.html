@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ display_mode }} - Product List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://kit.fontawesome.com/a745c62a55.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div>
+        <h1>🛍️ toBuy </h1>
+    </div>
+
+    <div class="navigation">
+        <a href="{{ url_for('index') }}"><button>🏠 Home</button></a>
+        <a href="{{ url_for('all_products') }}"><button>📝 All Products</button></a>
+        <a href="{{ url_for('to_buy') }}"><button>🛒 To Buy</button></a>
+        <button class="add_btn" onclick="openAddProductPopup()">Add Product</button>
+        <button class="del_btn" onclick="openRemoveProductPopup()">Remove Product</button>
+        
+    </div>
+
+    <div class=table-block>
+    <table class="product-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Expiration (days)</th>
+                <th class="center">To Buy</th>
+                <th class="center">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.id }}</td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.type }}</td>
+                <td>{{ product.expiration }}</td>
+                <td class="checkmark" onclick="toggleToBuy({{ product.id }})">
+                    {% if product.toBuy %}
+                        <i class="fas fa-check-circle"></i>
+                    {% else %}
+                        <i class="far fa-circle"></i>
+                    {% endif %}
+                </td>
+                <td class="action-cell">
+                    <a class="action-link" href="{{ url_for('toggle_buy', product_id=product.id) }}">
+                        {% if display_mode == 'All Products' %}
+                        ⚙️
+                        {% elif display_mode == 'To Buy' %}
+                        ✖
+                        {% endif %}
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+    <div class="popup" id="addProductPopup">
+        <span class="popup-close" onclick="closeAddProductPopup()">&times;</span>
+        <form method="POST" action="{{ url_for('add_product') }}" class="popup-form" onsubmit="return validateAddProductForm()">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required><br><br>
+
+            <label for="type">Type:</label>
+            <select id="type" name="type" required>
+                <option value="food">Food</option>
+                <option value="cleaning">Cleaning</option>
+                <option value="hygiene">Hygiene</option>
+            </select><br><br>
+
+            <label for="expiration">Expiration (days):</label>
+            <input type="number" id="expiration" name="expiration" required><br><br>
+
+            <input type="checkbox" id="toBuy" name="toBuy">
+            <label for="toBuy">Need to Buy?</label><br><br>
+
+            <button type="submit">Add Product</button>
+        </form>
+    </div>
+
+    <div class="popup" id="removeProductPopup">
+        <span class="popup-close" onclick="closeRemoveProductPopup()">&times;</span>
+        <form method="POST" action="{{ url_for('remove_product') }}" class="popup-form">
+            <label for="productToRemove">Select Product to Remove:</label>
+            <select id="productToRemove" name="productToRemove">
+                {% for product in products %}
+                    <option value="{{ product.id }}">{{ product.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Remove</button>
+        </form>
+    </div>
+
+    <footer class="footer">
+        <p class="footer-text">🛍️ toBuy @ 2024</p>
+   </footer>
+   <script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html>
