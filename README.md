@@ -9,9 +9,11 @@
 **Pokretanje:**
 
 `git clone https://github.com/tvojic/toBuy`
+
 `cd tobuy`
 
 `docker build -t tobuy .`
+
 `docker run -p 8080:8080 tobuy`
 
 *Container bi trebao raditi na localhost adresi:* `localhost:8080`.
